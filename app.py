@@ -18,7 +18,6 @@ except Exception as e:
 @app.route('/')
 def home():
     return render_template('index.html')
-expected_input_length = 17
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
