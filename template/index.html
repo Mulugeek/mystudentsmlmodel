@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ML API</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+</head>
+<body>
+ <div class="login">
+    <h1> Student end of year academic performance score Predictor</h1>
+    <form action="{{ url_for('predict') }}" method="post">
+        <input name="sex" placeholder="Sex" required="required"/><br>
+        <input name="age" placeholder="Age" required="required"/><br>
+        <input name="Medu" placeholder="Mother's Education" required="required"/><br>
+        <input name="Fedu" placeholder="Father's Education" required="required"/><br>
+        <input name="Mjob" placeholder="Mother's Job" required="required"/><br>
+        <input name="Fjob" placeholder="Father's Job" required="required"/><br>
+        <input name="traveltime" placeholder="Travel Time" required="required"/><br>
+        <input name="studytime" placeholder="Study Time" required="required"/><br>
+        <input name="failures" placeholder="Failures" required="required"/><br>
+        <input name="schoolsup" placeholder="School Support" required="required"/><br>
+        <input name="famsup" placeholder="Family Support" required="required"/><br>
+        <input name="paid" placeholder="Paid" required="required"/><br>
+        <input name="nursery" placeholder="Nursery" required="required"/><br>
+        <input name="internet" placeholder="Internet" required="required"/><br>
+        <input name="romantic" placeholder="Romantic" required="required"/><br>
+        <input name="famrel" placeholder="Family Relationship" required="required"/><br>
+        <input name="goout" placeholder="Go Out" required="required"/><br>
+
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+    </form>
+    <br>
+    <br>
+    {{ prediction }}
+</div>
+</body>
+</html>
+
 
