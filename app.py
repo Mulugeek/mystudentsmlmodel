@@ -18,31 +18,25 @@ except Exception as e:
 expected_input_length = 17
 
 @app.route('/')
-
 def home():
     return render_template('index.html')
+
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
         # Validate input
-        int_features = [int(x) for x in request.form.values()]
+        int_features = [int(request.form[name]) for name in request.form]
         if len(int_features) != expected_input_length:
             raise ValueError("Incorrect number of input features.")
 
         # Transform features using scaler
-        pre_final_features = [np.array(int_features)]
-        final_features = scaler.transform(pre_final_features)
+        final_features = scaler.transform([int_features])
 
         # Make prediction
         prediction = model.predict(final_features)
 
         # Process prediction result
-        if (prediction[0] == 1):
-            output = "Pass"
-        elif (prediction[0] == 0):
-            output = "Fail"
-        else:
-            output = "Not Sure"
+        output = "Pass" if prediction[0] == 1 else "Fail"
 
         return render_template('index.html', prediction_text='The student\'s end of year final exam result will be {}'.format(output))
 
