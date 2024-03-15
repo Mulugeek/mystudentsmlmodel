@@ -15,6 +15,8 @@ except Exception as e:
     print("Error:", e)
     exit(1)
 
+expected_input_length = 17
+
 @app.route('/')
 
 def home():
