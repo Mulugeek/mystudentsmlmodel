@@ -29,11 +29,14 @@
         <input name="romantic" placeholder="Romantic" required="required"/><br>
         <input name="famrel" placeholder="Family Relationship" required="required"/><br>
         <input name="goout" placeholder="Go Out" required="required"/><br>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+         <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
     </form>
     <br>
     <br>
-    {{ prediction }}
+    <!-- Display prediction result -->
+    {% if prediction_text %}
+    <p>{{ prediction_text }}</p>
+    {% endif %}
 </div>
 </body>
 </html>
