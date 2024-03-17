@@ -12,7 +12,10 @@
  <div class="login">
     <h1> Student end of year academic performance score Predictor</h1>
     <form action="{{ url_for('predict') }}" method="post">
-        <input name="sex" placeholder="Sex" required="required"/><br>
+      <select name="sex" required>
+             <option value="1">Male</option>
+              <option value="0">Female</option>
+      </select><br>
         <input name="age" placeholder="Age" required="required"/><br>
         <input name="Medu" placeholder="Mother's Education" required="required"/><br>
         <input name="Fedu" placeholder="Father's Education" required="required"/><br>
