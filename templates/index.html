@@ -14,14 +14,13 @@
     <form action="{{ url_for('predict') }}" method="post">
       
   <tr>
-  <td><strong>Gender</strong></td>
+  <td><strong>Gender: </strong></td>
   <td>
-       <select name="sex" required>
-            <option value="1">Male</option>
-             <option value="0">Female</option>
-    </select>
+      <option value=""> </option> 
+      <option value="1">Male</option>
+      <option value="0">Female</option>
   </td>
-</tr>
+</tr><br>
         <input name="age" placeholder="Age" required="required"/><br>
         <input name="Medu" placeholder="Mother's Education" required="required"/><br>
         <input name="Fedu" placeholder="Father's Education" required="required"/><br>
