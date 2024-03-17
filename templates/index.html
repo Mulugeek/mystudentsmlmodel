@@ -7,12 +7,24 @@
   <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+  <style>
+  table {
+    margin: 0 auto; /* Center the table horizontally */
+    width: auto; /* Allow the table to adjust its width based on content */
+    border-collapse: collapse; /* Collapse table borders */
+  }
+  th, td {
+    border: 1px solid black; /* Add borders to cells */
+    padding: 8px; /* Add padding to cells */
+    text-align: center; /* Center align text in cells */
+  }
+</style>
 </head>
 <body>
  <div class="login">
     <h1> Student end of year academic performance score Predictor</h1>
     <form action="{{ url_for('predict') }}" method="post">  
-  <tr>
+ <table> <tr>
   <td><strong>Gender: </strong></td>
   <td>
     <select name="sex">
@@ -22,10 +34,18 @@
     </select>
   </td>
 </tr>
-        <input name="age" placeholder="Age" required="required"/><br>
-        <input name="Medu" placeholder="Mother's Education" required="required"/><br>
-        <input name="Fedu" placeholder="Father's Education" required="required"/><br>
-       <tr>
+<tr>
+  <td><strong>Age: </strong></td>
+  <td><input name="age" placeholder="Age" required="required"/></td>
+</tr>
+  <td><strong>Mother Edu: </strong></td> 
+  <td> <input name="Medu" placeholder="Mother's Education" required="required"/></td>
+</tr>
+<tr>
+   <td><strong>Father Edu: </strong></td>
+  <td><input name="Fedu" placeholder="Father's Education" required="required"/></td>
+  </tr>
+<tr>
   <td><strong>Mother's Job</strong></td>
   <td>
     <label><input type="radio" name="Mjob" value="0" required> Teacher</label><br>
@@ -48,6 +68,7 @@
         <input name="famrel" placeholder="Family Relationship" required="required"/><br>
         <input name="goout" placeholder="Go Out" required="required"/><br>
          <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+ </table>
     </form>
     <br>
     <br>
