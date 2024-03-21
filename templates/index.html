@@ -37,14 +37,27 @@
 <tr>
   <td><strong>Age: </strong></td>
   <td><input name="age" placeholder="Age" required="required"/></td>
-</tr>
-  <td><strong>Mother Edu: </strong></td> 
-  <td> <input name="Medu" placeholder="Mother's Education" required="required"/></td>
+<tr>
+  <td><strong>Mother Edu:</strong></td>
+  <td>
+    <label><input type="radio" name="Medu" value="0" required> None</label><br>
+    <label><input type="radio" name="Medu" value="1" required> Primary Education (4th grade)</label><br>
+    <label><input type="radio" name="Medu" value="2" required> 5th to 9th Grade</label><br>
+    <label><input type="radio" name="Medu" value="3" required> Secondary Education</label><br>
+    <label><input type="radio" name="Medu" value="4" required> Higher Education</label><br>
+  </td>
 </tr>
 <tr>
-   <td><strong>Father Edu: </strong></td>
-  <td><input name="Fedu" placeholder="Father's Education" required="required"/></td>
-  </tr>
+  <td><strong>Father Edu:</strong></td>
+  <td>
+    <label><input type="radio" name="Fedu" value="0" required> None</label><br>
+    <label><input type="radio" name="Fedu" value="1" required> Primary Education (4th grade)</label><br>
+    <label><input type="radio" name="Fedu" value="2" required> 5th to 9th Grade</label><br>
+    <label><input type="radio" name="Fedu" value="3" required> Secondary Education</label><br>
+    <label><input type="radio" name="Fedu" value="4" required> Higher Education</label><br>
+  </td>
+</tr>
+
 <tr>
   <td><strong>Mother's Job</strong></td>
   <td>
@@ -54,10 +67,37 @@
     <label><input type="radio" name="Mjob" value="3" required> At Home</label><br>
     <label><input type="radio" name="Mjob" value="4" required> Other</label><br>
   </td>
-</tr><br>
-        <input name="Fjob" placeholder="Father's Job" required="required"/><br>
-        <input name="traveltime" placeholder="Travel Time" required="required"/><br>
-        <input name="studytime" placeholder="Study Time" required="required"/><br>
+</tr>
+   <tr>
+  <td><strong>Father's Job:</strong></td>
+  <td>
+    <label><input type="radio" name="Fjob" value="0" required> Teacher</label><br>
+    <label><input type="radio" name="Fjob" value="1" required> Health Care Related</label><br>
+    <label><input type="radio" name="Fjob" value="2" required> Civil Services</label><br>
+    <label><input type="radio" name="Fjob" value="3" required> At Home</label><br>
+    <label><input type="radio" name="Fjob" value="4" required> Other</label><br>
+  </td>
+</tr>
+
+   <tr>
+  <td><strong>Home to School Travel Time:</strong></td>
+  <td>
+    <label><input type="radio" name="traveltime" value="1" required> < 15 min.</label><br>
+    <label><input type="radio" name="traveltime" value="2" required> 15 to 30 min.</label><br>
+    <label><input type="radio" name="traveltime" value="3" required> 30 min. to 1 hour</label><br>
+    <label><input type="radio" name="traveltime" value="4" required> > 1 hour</label><br>
+  </td>
+</tr>
+   <tr>
+  <td><strong>Weekly Study Time:</strong></td>
+  <td>
+    <label><input type="radio" name="studytime" value="1" required> < 2 hours</label><br>
+    <label><input type="radio" name="studytime" value="2" required> 2 to 5 hours</label><br>
+    <label><input type="radio" name="studytime" value="3" required> 5 to 10 hours</label><br>
+    <label><input type="radio" name="studytime" value="4" required> > 10 hours</label><br>
+  </td>
+</tr>
+        
         <input name="failures" placeholder="Failures" required="required"/><br>
         <input name="schoolsup" placeholder="School Support" required="required"/><br>
         <input name="famsup" placeholder="Family Support" required="required"/><br>
