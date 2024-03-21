@@ -97,16 +97,85 @@
     <label><input type="radio" name="studytime" value="4" required> > 10 hours</label><br>
   </td>
 </tr>
+  <tr>
+  <td><strong>Number of Past Class Failures:</strong></td>
+  <td>
+    <label><input type="radio" name="failures" value="0" required> 0</label><br>
+    <label><input type="radio" name="failures" value="1" required> 1</label><br>
+    <label><input type="radio" name="failures" value="2" required> 2</label><br>
+    <label><input type="radio" name="failures" value="4" required> >= 3</label><br>
+  </td>
+</tr>
         
-        <input name="failures" placeholder="Failures" required="required"/><br>
-        <input name="schoolsup" placeholder="School Support" required="required"/><br>
-        <input name="famsup" placeholder="Family Support" required="required"/><br>
-        <input name="paid" placeholder="Paid" required="required"/><br>
-        <input name="nursery" placeholder="Nursery" required="required"/><br>
-        <input name="internet" placeholder="Internet" required="required"/><br>
-        <input name="romantic" placeholder="Romantic" required="required"/><br>
-        <input name="famrel" placeholder="Family Relationship" required="required"/><br>
-        <input name="goout" placeholder="Go Out" required="required"/><br>
+<tr>
+  <td><strong>School Support:</strong></td>
+  <td>
+    <label><input type="radio" name="schoolsup" value="yes" required> Yes</label>
+    <label><input type="radio" name="schoolsup" value="no" required> No</label>
+  </td>
+</tr>
+      <tr>
+               <td><strong>Family Educational Support:</strong></td>
+       <td>
+          <label><input type="radio" name="famsup" value="1" required> Yes</label><br>
+          <label><input type="radio" name="famsup" value="0" required> No</label><br>
+      </td>
+    </tr>
+        <tr>
+  <td><strong>Paid:</strong></td>
+  <td>
+    <label><input type="radio" name="paid" value="1" required> Yes</label>
+    <label><input type="radio" name="paid" value="0" required> No</label>
+  </td>
+</tr>
+        <tr>
+  <td><strong>Nursery:</strong></td>
+  <td>
+    <label><input type="radio" name="nursery" value="1" required> Yes</label>
+    <label><input type="radio" name="nursery" value="0" required> No</label>
+  </td>
+</tr>
+       <tr>
+  <td><strong>Internet:</strong></td>
+  <td>
+    <label><input type="radio" name="internet" value="1" required> Yes</label>
+    <label><input type="radio" name="internet" value="0" required> No</label>
+  </td>
+</tr>
+        <tr>
+  <td><strong>Romantic:</strong></td>
+  <td>
+    <label><input type="radio" name="romantic" value="1" required> Yes</label>
+    <label><input type="radio" name="romantic" value="0" required> No</label>
+  </td>
+</tr>
+ <tr>
+  <td><strong>Family Relationship:</strong></td>
+  <td>
+    <select name="famrel" required>
+      <option value="" disabled selected>Select</option>
+      <option value="1">Very Bad</option>
+      <option value="2">Bad</option>
+      <option value="3">Average</option>
+      <option value="4">Good</option>
+      <option value="5">Excellent</option>
+    </select>
+  </td>
+</tr>
+      
+<tr>
+  <td><strong>Going out with Friends:</strong></td>
+  <td>
+    <select name="goout" required>
+      <option value="" disabled selected>Select level</option>
+      <option value="1">Very Low</option>
+      <option value="2">Low</option>
+      <option value="3">Moderate</option>
+      <option value="4">High</option>
+      <option value="5">Very High</option>
+    </select>
+  </td>
+</tr>
          <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
  </table>
     </form>
