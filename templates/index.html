@@ -23,6 +23,10 @@
 <body>
  <div class="login">
     <h3>STUDENT END OF YEAR ACADEMIC PERFORMANCE SCORE PREDICTOR</h3>
+    <!-- Display prediction result -->
+    {% if prediction_text %}
+    <p>{{ prediction_text }}</p>
+    {% endif %}
     <form action="{{ url_for('predict') }}" method="post">  
  <table> <tr>
   <td><strong>Gender: </strong></td>
@@ -179,7 +183,6 @@
          <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
  </table>
     </form>
-    <br>
     <br>
     <!-- Display prediction result -->
     {% if prediction_text %}
