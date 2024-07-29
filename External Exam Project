@@ -1,68 +1,39 @@
- WITH Contacts AS (
+WITH Contacts AS (
     SELECT
         Students.DCID,
         NVL2(PhoneNumber.PhoneNumber,
-        SUBSTR(PhoneNumber.PhoneNumber,1,3) || '-' ||
-        SUBSTR(PhoneNumber.PhoneNumber,4,3) || '-' ||
-        SUBSTR(PhoneNumber.PhoneNumber,7),
+            SUBSTR(PhoneNumber.PhoneNumber,1,3) || '-' ||
+            SUBSTR(PhoneNumber.PhoneNumber,4,3) || '-' ||
+            SUBSTR(PhoneNumber.PhoneNumber,7),
             NULL
-        ) PhoneNumber,
-        LOWER(EmailAddress.EmailAddress) Email,
-        DENSE_RANK()
-        OVER (   PARTITION BY
-                Students.DCID
-                         ORDER BY
-                StudentContactAssoc.ContactPriorityOrder
-        ) PriorityRank,
-        DENSE_RANK() OVER (
-            PARTITION BY
-                Students.DCID,
-                StudentContactAssoc.ContactPriorityOrder
-            ORDER BY
-                PersonPhoneNumberAssoc.PhoneNumberPriorityOrder
-        ) PhoneNumberRank,
-        DENSE_RANK() OVER (
-            /* ...and the same idea with the E-mail Addresses */
-            PARTITION BY
-                Students.DCID,
-                StudentContactAssoc.ContactPriorityOrder
-            ORDER BY
-                PersonEmailAddressAssoc.EmailAddressPriorityOrder
-        ) EmailRank
-    FROM
-        Students
-        LEFT JOIN StudentContactAssoc
-            ON Students.DCID = StudentContactAssoc.StudentDCID
-        LEFT JOIN StudentContactDetail
-            USING (StudentContactAssocID)
-        LEFT JOIN PersonEmailAddressAssoc
-            ON StudentContactAssoc.PersonID = PersonEmailAddressAssoc.PersonID
-        LEFT JOIN EmailAddress
-            USING (EmailAddressID)
-        LEFT JOIN Codeset PhoneCodeset
-            ON PhoneCodeset.CodeType = 'Phone' AND PhoneCodeset.Code = 'Mobile'
-        LEFT JOIN PersonPhoneNumberAssoc
-            ON StudentContactAssoc.PersonID = PersonPhoneNumberAssoc.PersonID
-            AND PersonPhoneNumberAssoc.PhoneTypeCodesetID = PhoneCodeset.CodesetID
-        LEFT JOIN PhoneNumber USING (PhoneNumberID)
-    WHERE
-        TRUNC(SYSDATE) BETWEEN
-            COALESCE(StudentContactDetail.StartDate,TRUNC(SYSDATE))
-            AND COALESCE(StudentContactDetail.EndDate,TRUNC(SYSDATE))
+        ) AS PhoneNumber,
+        LOWER(EmailAddress.EmailAddress) AS Email,
+        DENSE_RANK() OVER (PARTITION BY Students.DCID ORDER BY StudentContactAssoc.ContactPriorityOrder) AS PriorityRank,
+        DENSE_RANK() OVER (PARTITION BY Students.DCID, StudentContactAssoc.ContactPriorityOrder ORDER BY PersonPhoneNumberAssoc.PhoneNumberPriorityOrder) AS PhoneNumberRank,
+        DENSE_RANK() OVER (PARTITION BY Students.DCID, StudentContactAssoc.ContactPriorityOrder ORDER BY PersonEmailAddressAssoc.EmailAddressPriorityOrder) AS EmailRank
+    FROM Students
+    LEFT JOIN StudentContactAssoc ON Students.DCID = StudentContactAssoc.StudentDCID
+    LEFT JOIN StudentContactDetail ON StudentContactAssoc.StudentContactAssocID = StudentContactDetail.StudentContactAssocID
+    LEFT JOIN PersonEmailAddressAssoc ON StudentContactAssoc.PersonID = PersonEmailAddressAssoc.PersonID
+    LEFT JOIN EmailAddress ON PersonEmailAddressAssoc.EmailAddressID = EmailAddress.EmailAddressID
+    LEFT JOIN Codeset PhoneCodeset ON PhoneCodeset.CodeType = 'Phone' AND PhoneCodeset.Code = 'Mobile'
+    LEFT JOIN PersonPhoneNumberAssoc ON StudentContactAssoc.PersonID = PersonPhoneNumberAssoc.PersonID AND PersonPhoneNumberAssoc.PhoneTypeCodesetID = PhoneCodeset.CodesetID
+    LEFT JOIN PhoneNumber ON PersonPhoneNumberAssoc.PhoneNumberID = PhoneNumber.PhoneNumberID
+    WHERE TRUNC(SYSDATE) BETWEEN COALESCE(StudentContactDetail.StartDate, TRUNC(SYSDATE)) AND COALESCE(StudentContactDetail.EndDate, TRUNC(SYSDATE))
 )
 SELECT
-    Students.Student_Number as StudentID,
-    students.first_name AS "First_Name",
-    students.last_name AS "Last_Name",
-    Students.Gender as Gender,
-    Students.Grade_Level as GradeLevel,
-    Students.SchoolID as SchoolID,
+    Students.Student_Number AS StudentID,
+    Students.first_name AS "First_Name",
+    Students.last_name AS "Last_Name",
+    Students.Gender AS Gender,
+    Students.Grade_Level AS GradeLevel,
+    Students.SchoolID AS SchoolID,
     'CGA' AS "Exam_Type",
     'CGA' AS "Centre_Type",
-     usec.EXAM_BOARD as "EXAM_BOARD",
-     usec.TARGET_EXAM_SESSION as "TARGET_EXAM_SESSION",
+    usec.EXAM_BOARD AS "EXAM_BOARD",
+    usec.TARGET_EXAM_SESSION AS "TARGET_EXAM_SESSION",
+    usec.cga_stream_name,
     'TBD' AS "Edexcel_Cambridge",
-    
     CASE
         WHEN REGEXP_LIKE(courses.course_name, '~IAS ') THEN 'IAL'
         WHEN REGEXP_LIKE(courses.course_name, '~IA2 ') THEN 'IAL'
@@ -70,85 +41,55 @@ SELECT
         WHEN REGEXP_LIKE(courses.course_name, '~AP ') THEN 'AP'
         ELSE 'Other'
     END AS "Level",
-    
     CASE 
-                WHEN U_DEF_EXT_CC.CC_TARGET_EXAM_SESSION = 'Oct/Nov' THEN TO_CHAR((ADD_MONTHS(SYSDATE, -6)), 'YY')
-                WHEN U_DEF_EXT_CC.CC_TARGET_EXAM_SESSION = 'January' THEN TO_CHAR((ADD_MONTHS(SYSDATE, 6)), 'YY')
-                WHEN U_DEF_EXT_CC.CC_TARGET_EXAM_SESSION = 'May/June' THEN TO_CHAR((ADD_MONTHS(SYSDATE, 6)), 'YY')
-             ELSE 'N/A'
-             END AS "Exam Year",
-   
+        WHEN U_DEF_EXT_CC.CC_TARGET_EXAM_SESSION = 'Oct/Nov' THEN TO_CHAR(ADD_MONTHS(SYSDATE, -6), 'YY')
+        WHEN U_DEF_EXT_CC.CC_TARGET_EXAM_SESSION = 'January' THEN TO_CHAR(ADD_MONTHS(SYSDATE, 6), 'YY')
+        WHEN U_DEF_EXT_CC.CC_TARGET_EXAM_SESSION = 'May/June' THEN TO_CHAR(ADD_MONTHS(SYSDATE, 6), 'YY')
+        ELSE 'N/A'
+    END AS "Exam Year",
     courses.course_number AS "ClassID",
-    students.student_number AS "StudentID",
     teachers.first_name || ' ' || teachers.last_name AS "Teacher",
     'TBD' AS Intake,
     courses.course_name,
     u.CGA_STUDENT_EMAIL AS "Email",
     U_REG_INFO.RESIDENCE_COUNTRY AS "Country",
-    students.city AS "City",
-    'TBD' AS  "Testing_Centre_Pre_RIS",
-    'TBD' AS  "Centre_Type_Pre_RIS",
-    'TBD' AS  "Testing_Centre",
-    'TBD' AS  "Pricing_Category_RIS_Only",
-    'TBD' AS  "Level_Subject",
-    'TBD' AS  "Unit1",
-    'TBD' AS  "Unit2",
-    'TBD' AS  "Unit3",
-    'TBD' AS  "Award",
+    Students.city AS "City",
+    'TBD' AS "Testing_Centre_Pre_RIS",
+    'TBD' AS "Centre_Type_Pre_RIS",
+    'TBD' AS "Testing_Centre",
+    'TBD' AS "Pricing_Category_RIS_Only",
+    'TBD' AS "Level_Subject",
+    'TBD' AS "Unit1",
+    'TBD' AS "Unit2",
+    'TBD' AS "Unit3",
+    'TBD' AS "Award",
     'TBD' AS "Sitting",
-    'TBD' as "Confirmed by student_guardian",
-    'TBD' as "Invoice Paid_Registered",
-     Contacts1.Email "Email1",
-     Contacts2.Email "Email2",
-     Contacts3.Email "Email3",
-     'TBD' as "Notes",
-     'TBD' as "Candidate_Number",
-     'TBD' as "Statement_of_Entry_Link",
-     'TBD' as "Timetable_Link",
-     'TBD' as "CGA Centre_Timetable_Link",
-     'TBD' as "Entry_fees",
-     'TBD' as "Late_fees",
-'TBD' as "High_late_fees"
-FROM
-    Students
-           LEFT JOIN (SELECT * FROM Contacts) Contacts1
-                ON Students.DCID = Contacts1.DCID
-                AND COALESCE(Contacts1.PriorityRank,1)    = 1
-                AND COALESCE(Contacts1.PhoneNumberRank,1) = 1
-                AND COALESCE(Contacts1.EmailRank,1)       = 1
-           LEFT JOIN (SELECT * FROM Contacts) Contacts2
-               ON Students.DCID = Contacts2.DCID
-               AND COALESCE(Contacts2.PriorityRank,1)    = 2
-               AND COALESCE(Contacts2.PhoneNumberRank,1) = 1
-               AND COALESCE(Contacts2.EmailRank,1)       = 1
-           LEFT JOIN (SELECT * FROM Contacts) Contacts3
-               ON Students.DCID = Contacts3.DCID
-               AND COALESCE(Contacts3.PriorityRank,1)    = 3
-               AND COALESCE(Contacts3.PhoneNumberRank,1) = 1
-               AND COALESCE(Contacts3.EmailRank,1)       = 1
-           Left JOIN cc ON STUDENTS.ID = CC.STUDENTID
-           JOIN sections ON cc.sectionid = sections.id
-           JOIN teachers ON cc.teacherid = teachers.id
-           JOIN courses ON cc.course_number = courses.course_number
-           JOIN students ON cc.studentid = students.id
-           JOIN schools ON students.schoolid = schools.school_number
-           JOIN terms ON sections.termid = terms.id AND sections.schoolid = terms.schoolid
-           JOIN sectionteacher ON sections.id = sectionteacher.sectionid
-           JOIN schoolstaff ON schoolstaff.id = sectionteacher.teacherid
-           JOIN users ON users.dcid = schoolstaff.users_dcid
-           JOIN U_DEF_EXT_STUDENTS u ON u.studentsDCID = students.DCID
-           LEFT JOIN U_REG_INFO ON U_REG_INFO.studentsDCID = students.DCID
-           LEFT JOIN U_DEF_EXT_SECTIONS usec ON students.DCID = usec.sectionsdcid
-           LEft JOIN U_DEF_EXT_CC ON cc.DCID = U_DEF_EXT_CC.CCDCID
-           JOIN studentcorefields ON students.dcid = studentcorefields.studentsdcid
-WHERE
-    /* Active students only */
-    Students.Enroll_Status = 0
-    AND terms.id IN (3300)
- 
- 
- 
- 
- 
- 
- 
+    'TBD' AS "Confirmed by student_guardian",
+    'TBD' AS "Invoice Paid_Registered",
+    Contacts1.Email AS "Email1",
+    Contacts2.Email AS "Email2",
+    Contacts3.Email AS "Email3",
+    'TBD' AS "Notes",
+    'TBD' AS "Candidate_Number",
+    'TBD' AS "Statement_of_Entry_Link",
+    'TBD' AS "Timetable_Link",
+    'TBD' AS "CGA Centre_Timetable_Link",
+    'TBD' AS "Entry_fees",
+    'TBD' AS "Late_fees",
+    'TBD' AS "High_late_fees"
+FROM Students
+LEFT JOIN Contacts Contacts1 ON Students.DCID = Contacts1.DCID AND Contacts1.PriorityRank = 1 AND Contacts1.PhoneNumberRank = 1 AND Contacts1.EmailRank = 1
+LEFT JOIN Contacts Contacts2 ON Students.DCID = Contacts2.DCID AND Contacts2.PriorityRank = 2 AND Contacts2.PhoneNumberRank = 1 AND Contacts2.EmailRank = 1
+LEFT JOIN Contacts Contacts3 ON Students.DCID = Contacts3.DCID AND Contacts3.PriorityRank = 3 AND Contacts3.PhoneNumberRank = 1 AND Contacts3.EmailRank = 1
+LEFT JOIN cc ON Students.ID = cc.studentid
+JOIN sections ON cc.sectionid = sections.id
+JOIN terms ON sections.termid = terms.id AND sections.schoolid = terms.schoolid
+JOIN teachers ON cc.teacherid = teachers.id
+JOIN courses ON sections.course_number = courses.course_number
+LEFT JOIN U_DEF_EXT_STUDENTS u ON Students.DCID = u.studentsDCID
+LEFT JOIN U_REG_INFO ON U_REG_INFO.studentsDCID = Students.DCID
+LEFT JOIN U_DEF_EXT_SECTIONS usec ON Students.DCID = usec.sectionsdcid
+LEFT JOIN U_DEF_EXT_CC ON cc.DCID = U_DEF_EXT_CC.CCDCID
+WHERE Students.Enroll_Status = 0 
+AND terms.id IN(3300)
+   
